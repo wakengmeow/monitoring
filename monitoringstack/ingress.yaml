@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1 
+kind: Ingress
+metadata: 
+    name: ingresscontroller
+    namespace: monitoringstack
+    annotations:
+      kubernetes.io/ingress.class: "youringressclassname"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+spec:
+    # tls:
+    # - secretname: webgui 
+    rules:
+    - http:
+        paths:
+        - path: /alertmanager
+          pathType: Prefix
+          backend:
+            service:
+              name: alertmanager # Fill in backend service name
+              port: 
+                number: 9093
+        - path: /prometheus
+          pathType: Prefix
+          backend:
+            service:
+              name: prometheus-service # Fill in backend service name
+              port: 
+                number: 9090
+        - path: /(.*) 
+          pathType: Prefix
+          backend:
+            service:
+              name: grafana # Fill in backend service name
+              port: 
+                number: 3000
+
